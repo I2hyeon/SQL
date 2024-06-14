@@ -38,13 +38,14 @@ SELECT TO_NUMBER('$5,500', '$999,999') FROM DUAL; -- 숫자로 변경이 자동으로 불가
 
 --------------------------------------------------------------------------------
 -- NULL처리 함수
+
+-- NVS (대상값, null일때 변환값) null일 경우 처리
 SELECT NVL(1000, 0), NVL(NULL, 0) FROM DUAL;
 SELECT NULL + 1000 FROM DUAL; -- NULL에 연산이 들어가면 NULL이 나옴
 SELECT FIRST_NAME, SALARY, COMMISSION_PCT, SALARY + SALARY * COMMISSION_PCT AS 최종급여 FROM EMPLOYEES;
 SELECT FIRST_NAME, SALARY, COMMISSION_PCT, SALARY + SALARY * NVL(COMMISSION_PCT, 0) AS 최종급여 FROM EMPLOYEES;
 
 -- NVL2 (대상값, 널이 아닌 경우, 널인 경우)
-
 SELECT NVL2(NULL, 'NULL이 아닙니다', 'NULL입니다') FROM DUAL;
 
 SELECT FIRST_NAME, SALARY, COMMISSION_PCT, NVL2(COMMISSION_PCT, SALARY + SALARY*COMMISSION_PCT, SALARY) AS 최종급여 FROM EMPLOYEES;
@@ -79,7 +80,7 @@ SELECT JOB_ID,
                    WHEN 'AD_VP' THEN SALARY * 1.2
                    WHEN 'FI_MGR' THEN SALARY * 1.3
                    ELSE SALARY 
-       END 
+       END AS 급여
 FROM EMPLOYEES;
 
 -- 비교에 대한 조건을 WHEN절에 쓸 수 있음
