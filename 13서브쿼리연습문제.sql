@@ -231,8 +231,8 @@ SELECT D.MANAGER_ID,
        D.DEPARTMENT_NAME,
        A.*
 FROM (
-       SELECT DEPARTMENT_ID,
-              COUNT(*) AS 부서인원수
+       SELECT COUNT(*) AS 부서인원수, 
+              DEPARTMENT_ID
        FROM EMPLOYEES E
        GROUP BY DEPARTMENT_ID
        HAVING DEPARTMENT_ID IS NOT NULL
@@ -242,8 +242,28 @@ ORDER BY 부서인원수 DESC;
 
 
 --문제15
---부서에 모든 컬럼, 주소, 우편번호, 부서별 평균 연봉을 구해서 출력하세요.
+--부서의 모든 컬럼, 주소, 우편번호, 부서별 평균 연봉을 구해서 출력하세요.
 --조건) 부서별 평균이 없으면 0으로 출력하세요
+
+-- 부서별 평균연봉
+SELECT TRUNC( AVG(SALARY) ) AS 평균연봉
+       ,DEPARTMENT_ID
+FROM EMPLOYEES
+GROUP BY DEPARTMENT_ID;
+
+SELECT D.*,
+       L.STREET_ADDRESS,
+       L.POSTAL_CODE,
+       E.평균연봉
+FROM DEPARTMENTS D
+JOIN (SELECT TRUNC( NVL(AVG(SALARY), 0) ) AS 평균연봉,
+             DEPARTMENT_ID
+      FROM EMPLOYEES
+      GROUP BY DEPARTMENT_ID
+      ) E
+ON D.DEPARTMENT_ID = E.DEPARTMENT_ID
+LEFT JOIN LOCATIONS L
+ON D.LOCATION_ID = L.LOCATION_ID;
 
 SELECT D.DEPARTMENT_ID 부서아이디,
        D.DEPARTMENT_NAME 부서명,
@@ -264,10 +284,10 @@ GROUP BY D.DEPARTMENT_ID, D.DEPARTMENT_NAME, D.MANAGER_ID, D.LOCATION_ID, L.STRE
 
 SELECT RN,
        B.*
-FROM ( SELECT ROWNUM AS RN,
+        FROM ( SELECT ROWNUM AS RN,
               A.*
-       FROM (
-       SELECT D.DEPARTMENT_ID 부서아이디,
+        FROM (
+        SELECT D.DEPARTMENT_ID 부서아이디,
               D.DEPARTMENT_NAME 부서명,
               D.MANAGER_ID 매니저아이디,
               D.LOCATION_ID 지역아이디,
